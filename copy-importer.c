@@ -41,7 +41,7 @@ int main(int argc, char ** argv) {
         if(success == 1) {
             count++;
             if(count % 10000 == 0) {
-                fprintf(stderr, "\rProcessing: Node(%luk))\n",count);
+                fprintf(stderr, "\rProcessing: Node(%luk)",count);
             }
         }
         /*if(PQresultStatus(res) != PGRES_COMMAND_OK) {
