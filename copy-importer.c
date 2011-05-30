@@ -39,7 +39,7 @@ int main(int argc, char ** argv) {
         //PQclear(res);
         int success = PQputCopyData(conn, buf, strlen(buf));
         if(success == 1)
-            printf("%s",buf);
+            //printf("%s",buf);
         /*if(PQresultStatus(res) != PGRES_COMMAND_OK) {
             fprintf(stderr, "COMMAND COPY failed: %s", PQerrorMessage(conn));
             PQclear(res);
