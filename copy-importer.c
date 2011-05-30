@@ -8,7 +8,7 @@ int main(int argc, char ** argv) {
     char buf[1024];
     PGconn *conn;
     PGresult *res;
-
+    unsigned long count = 0;
     char conninfo[1024];
     if(argc != 5) {
         fprintf(stderr,"copy-importer dbname host user password\n");
@@ -39,7 +39,10 @@ int main(int argc, char ** argv) {
         //PQclear(res);
         int success = PQputCopyData(conn, buf, strlen(buf));
         if(success == 1) {
-            //printf("%s",buf);
+            count++;
+            if(count % 10000 == 0) {
+                fprintf(stderr, "\rProcessing: Node(%luk))\n",count);
+            }
         }
         /*if(PQresultStatus(res) != PGRES_COMMAND_OK) {
             fprintf(stderr, "COMMAND COPY failed: %s", PQerrorMessage(conn));
