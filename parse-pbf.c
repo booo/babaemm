@@ -195,22 +195,22 @@ int addIntItem(struct keyval *head, const char *key, int val, int noDupe)
 /*int addInfoItems(struct keyval *head, Info *info, StringTable *string_table)
 {
       if (info->has_version) {
-	addIntItem(head, "version", info->version,   0);
+    addIntItem(head, "version", info->version,   0);
       }
       if (info->has_changeset) {
-	addIntItem(head, "changeset", info->changeset,   0);
+    addIntItem(head, "changeset", info->changeset,   0);
       }
       if (info->has_uid) {
-	addIntItem(head, "uid", info->uid,   0);
+    addIntItem(head, "uid", info->uid,   0);
       }
       if (info->has_user_sid) {
-	ProtobufCBinaryData user = string_table->s[info->user_sid];
-	char *username;
+    ProtobufCBinaryData user = string_table->s[info->user_sid];
+    char *username;
 
         username = calloc(user.len + 1, 1);
-	memcpy(username, user.data, user.len);
+    memcpy(username, user.data, user.len);
 
-	addItem(head, "user", username, 0);
+    addItem(head, "user", username, 0);
       }
 
 
@@ -244,9 +244,9 @@ int processOsmDataNodes(OSMPBF__PrimitiveGroup *group, OSMPBF__StringTable * str
     unsigned key_id;
     for (key_id = 0; key_id < node->n_keys; key_id++) {
       /*addProtobufItem(&(osmdata->tags),
-		      string_table->s[node->keys[key_id]],
-		      string_table->s[node->vals[key_id]],
-		      0);
+              string_table->s[node->keys[key_id]],
+              string_table->s[node->vals[key_id]],
+              0);
               */
     }
 
@@ -293,57 +293,64 @@ int processOsmDataDenseNodes(OSMPBF__PrimitiveGroup *group, OSMPBF__StringTable 
       deltalon += dense->lon[node_id];
 
       //if (dense->denseinfo && osmdata->extra_attributes) {
-	OSMPBF__DenseInfo *denseinfo = dense->denseinfo;
+    OSMPBF__DenseInfo *denseinfo = dense->denseinfo;
 
-	deltatimestamp += denseinfo->timestamp[node_id];
-	deltachangeset += denseinfo->changeset[node_id];
-	deltauid += denseinfo->uid[node_id];
-	deltauser_sid += denseinfo->user_sid[node_id];
-    if(deltauid != -1) {
-        printf("%s\n", string_table->s[deltauser_sid].data);
-    }
+    deltatimestamp += denseinfo->timestamp[node_id];
+    deltachangeset += denseinfo->changeset[node_id];
+    deltauid += denseinfo->uid[node_id];
+    deltauser_sid += denseinfo->user_sid[node_id];
+
+    
     //printf("%d\n",denseinfo->version[node_id]);
-	//addIntItem(&(osmdata->tags), "version", denseinfo->version[node_id], 0);
-	//addIntItem(&(osmdata->tags), "changeset", deltachangeset, 0);
+    //addIntItem(&(osmdata->tags), "version", denseinfo->version[node_id], 0);
+    //addIntItem(&(osmdata->tags), "changeset", deltachangeset, 0);
 
 #if 0
-	/* TODO */
-	if (deltauid != -1) { // osmosis devs failed to read the specs
-	  printuser(string_table->s[deltauser_sid]);
-	  printnumericattribute("uid", deltauid);
-	}
+    /* TODO */
+    if (deltauid != -1) { // osmosis devs failed to read the specs
+      printuser(string_table->s[deltauser_sid]);
+      printnumericattribute("uid", deltauid);
+    }
 
-	printtimestamp("timestamp", deltatimestamp);
+    printtimestamp("timestamp", deltatimestamp);
 #endif
       //}
 
       if (l < dense->n_keys_vals) {
-	while (dense->keys_vals[l] != 0 && l < dense->n_keys_vals) {
-	    //printf("k: %s, v: %s\n", string_table->s[dense->keys_vals[l]].data, string_table->s[dense->keys_vals[l+1]].data);
+    while (dense->keys_vals[l] != 0 && l < dense->n_keys_vals) {
+        //printf("k: %s, v: %s\n", string_table->s[dense->keys_vals[l]].data, string_table->s[dense->keys_vals[l+1]].data);
         /*addProtobufItem(&(osmdata->tags),
-			  string_table->s[dense->keys_vals[l]],
-			  string_table->s[dense->keys_vals[l+1]],
-			  0);
+              string_table->s[dense->keys_vals[l]],
+              string_table->s[dense->keys_vals[l+1]],
+              0);
         */
-	  l += 2;
-	}
-	l += 1;
+      l += 2;
+    }
+    l += 1;
       }
 
       lat = lat_offset + (deltalat * granularity);
       lon = lon_offset + (deltalon * granularity);
-      printf("POINT(%f %f)\n",lat, lon);
+      //printf("POINT(%f %f)\n",lat, lon);
       //reproject(&lat, &lon);
-
+      /*char time[30];
+      struct tm tim;
+      time_t tstamp;
+      tstamp = time(deltatimestamp);*/
+      const char* tags = "";
+      fprintf(stdout,"%ld;%d;%ld;2010-09-21 19:34:08;%lu;%s;SRID=4326\\;POINT(%f %f)\n",deltaid,denseinfo->version[node_id],deltauid,/*deltatimestamp,*/deltachangeset,tags,lat,lon);
+      /*if(deltauid != -1) {
+            printf("%s", string_table->s[deltauser_sid].data);
+      }*/
       //osmdata->out->node_add(deltaid, lat, lon, &(osmdata->tags));
 
       /*if (deltaid > osmdata->max_node) {
-	osmdata->max_node = deltaid;
+    osmdata->max_node = deltaid;
       }*/
 
       //osmdata->count_node++;
       //if (osmdata->count_node%10000 == 0)
-	//printStatus(osmdata);
+    //printStatus(osmdata);
     }
   }
 
@@ -370,20 +377,20 @@ int processOsmDataWays(struct osmdata_t *osmdata, PrimitiveGroup *group, StringT
       osmdata->nds[osmdata->nd_count++] = deltaref;
 
       if( osmdata->nd_count >= osmdata->nd_max )
-	realloc_nodes(osmdata);
+    realloc_nodes(osmdata);
     }
 
     for (unsigned key_id = 0; key_id < way->n_keys; key_id++) {
       addProtobufItem(&(osmdata->tags),
-		      string_table->s[way->keys[key_id]],
-		      string_table->s[way->vals[key_id]],
-		      0);
+              string_table->s[way->keys[key_id]],
+              string_table->s[way->vals[key_id]],
+              0);
     }
 
     osmdata->out->way_add(way->id,
-			  osmdata->nds,
-			  osmdata->nd_count,
-			  &(osmdata->tags) );
+              osmdata->nds,
+              osmdata->nd_count,
+              &(osmdata->tags) );
 
     if (way->id > osmdata->max_way) {
       osmdata->max_way = way->id;
@@ -425,37 +432,37 @@ int processOsmDataWays(struct osmdata_t *osmdata, PrimitiveGroup *group, StringT
 
       switch (relation->types[member_id]) {
       case RELATION__MEMBER_TYPE__NODE:
-	osmdata->members[osmdata->member_count].type = OSMTYPE_NODE;
-	break;
+    osmdata->members[osmdata->member_count].type = OSMTYPE_NODE;
+    break;
       case RELATION__MEMBER_TYPE__WAY:
-	osmdata->members[osmdata->member_count].type = OSMTYPE_WAY;
-	break;
+    osmdata->members[osmdata->member_count].type = OSMTYPE_WAY;
+    break;
       case RELATION__MEMBER_TYPE__RELATION:
-	osmdata->members[osmdata->member_count].type = OSMTYPE_RELATION;
-	break;
+    osmdata->members[osmdata->member_count].type = OSMTYPE_RELATION;
+    break;
       default:
-	fprintf(stderr, "Unsupported type: %u""\n", relation->types[member_id]);
-	return 0;
+    fprintf(stderr, "Unsupported type: %u""\n", relation->types[member_id]);
+    return 0;
       }
 
       osmdata->member_count++;
 
       if( osmdata->member_count >= osmdata->member_max ) {
-	realloc_members(osmdata);
+    realloc_members(osmdata);
       }
     }
 
     for (unsigned key_id = 0; key_id < relation->n_keys; key_id++) {
       addProtobufItem(&(osmdata->tags),
-		      string_table->s[relation->keys[key_id]],
-		      string_table->s[relation->vals[key_id]],
-		      0);
+              string_table->s[relation->keys[key_id]],
+              string_table->s[relation->vals[key_id]],
+              0);
     }
 
     osmdata->out->relation_add(relation->id,
-			       osmdata->members,
-			       osmdata->member_count,
-			       &(osmdata->tags));
+                   osmdata->members,
+                   osmdata->member_count,
+                   &(osmdata->tags));
 
     for (unsigned member_id = 0; member_id < osmdata->member_count; member_id++) {
       free(osmdata->members[member_id].role);
@@ -554,11 +561,11 @@ int streamFilePbf(char *filename)
 
     if (strcmp(header_msg->type, "OSMHeader") == 0) {
       if (!processOsmHeader(data, length)) {
-	goto err;
+    goto err;
       }
     } else if (strcmp(header_msg->type, "OSMData") == 0) {
       if (!processOsmData(data, length)) {
-	goto err;
+    goto err;
       }
     }
 
