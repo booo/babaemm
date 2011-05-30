@@ -9,8 +9,12 @@ int main(int argc, char ** argv) {
     PGconn *conn;
     PGresult *res;
 
-    const char *conninfo;
-    conninfo = "dbname = xapi_testing host = db.osm.spline.de user = xapi password = osmforlife";
+    char conninfo[1024];
+    if(argc != 5) {
+        fprintf(stderr,"copy-importer dbname host user password\n");
+        exit(1);
+    }
+    sprintf(conninfo,"dbname = %s host = %s user = %s password = %s",argv[1],argv[2],argv[3],argv[4]);
     conn = PQconnectdb(conninfo);
     if(PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Connection to database failed: %s", PQerrorMessage(conn));
