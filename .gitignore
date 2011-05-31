@@ -4,4 +4,5 @@ CMakeFiles
 Makefile
 cmake_install.cmake
 copy-importer
-parse-pbf
+node-parser
+way-parser

@@ -10,8 +10,8 @@ int main(int argc, char ** argv) {
     PGresult *res;
     unsigned long count = 0;
     char conninfo[1024];
-    if(argc != 5) {
-        fprintf(stderr,"copy-importer dbname host user password\n");
+    if(argc != 6) {
+        fprintf(stderr,"copy-importer dbname host user password node|way|relation\n");
         exit(1);
     }
     sprintf(conninfo,"dbname = %s host = %s user = %s password = %s",argv[1],argv[2],argv[3],argv[4]);
@@ -28,7 +28,12 @@ int main(int argc, char ** argv) {
         PQfinish(conn);
         exit(1);
     }
-    res = PQexec(conn, "COPY nodes (id, version, user_id, tstamp, changeset_id, tags, geom) FROM STDIN DELIMITER ';'");
+    if(!strcmp(argv[5],"node")) {
+        res = PQexec(conn, "COPY nodes (id, version, user_id, tstamp, changeset_id, tags, geom) FROM STDIN DELIMITER ';'");
+    }
+    else if(!strcmp(argv[5],"way")) {
+        res = PQexec(conn, "COPY ways (id, version, user_id, tstamp, changeset_id, tags, nodes) FROM STDIN DELIMITER ';'");
+    }
     if (PQresultStatus(res) != PGRES_COPY_IN) {
         fprintf(stderr, "COMMAND COPY FROM STDIN failed: %s", PQerrorMessage(conn));
         PQclear(res);
