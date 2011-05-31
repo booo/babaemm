@@ -382,8 +382,8 @@ int processOsmDataWays(OSMPBF__PrimitiveGroup *group, OSMPBF__StringTable *strin
     unsigned ref_id;
     strcat(nodes,"{");
     for (ref_id = 0; ref_id < way->n_refs-1; ref_id++) {
-      //deltaref += way->refs[ref_id];
-      sprintf(tmp,"%llu,",way->refs[ref_id]);
+      deltaref += way->refs[ref_id];
+      sprintf(tmp,"%ld,",deltaref);
       strcat(nodes,tmp);
       //osmdata->nds[osmdata->nd_count++] = deltaref;
 
